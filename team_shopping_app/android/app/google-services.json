@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:756816975393:android:96d4dc3c396629f8b8b560",
+        "mobilesdk_app_id": "1:756816975393:android:f3fca59d3ef9ce9ab8b560",
         "android_client_info": {
           "package_name": "com.example.team_shopping_app"
         }
@@ -37,6 +37,13 @@
             {
               "client_id": "756816975393-3m56jncmikvcqa2quct1sn2nes9a8gld.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "756816975393-0t7jj4dd21e2d13kjhhhamkfuunasvt4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterApplication1"
+              }
             }
           ]
         }
