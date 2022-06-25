@@ -6,7 +6,7 @@ class HomeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text('hello'),
+      body: Center(child: Text('hello')),
     );
   }
 }

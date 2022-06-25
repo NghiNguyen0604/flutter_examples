@@ -9,6 +9,7 @@ class FirebaseAuthentication {
 
   Future<void> logIn(Account acc, BuildContext context) async {
     try {
+      print(acc);
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: acc.email, password: acc.wwid);
     } catch (e) {
