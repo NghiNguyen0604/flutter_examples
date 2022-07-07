@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'modules/my_app.dart';
+import 'app/my_app.dart';
 import 'services/local_storage_services/sembast_database.dart';
 import 'theme/theme_controller.dart';
 import 'theme/theme_providers.dart';

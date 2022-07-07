@@ -9,6 +9,8 @@
  *
  * Description 
  */
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,18 +40,37 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Hello world. '),
-            ],
+      body: const GitHubUsersPage(),
+    );
+  }
+}
+
+class GitHubUsersPage extends StatelessWidget {
+  const GitHubUsersPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final title = Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+        );
+    final subtitle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.normal,
+        );
+    return ListView.builder(
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        return ListTile(
+          leading: const Icon(Icons.abc),
+          title: Text(
+            'User name $index',
+            style: title,
           ),
-        ],
-      ),
+          subtitle: Text(
+            'https://github.com/NghiNguyen0604',
+            style: subtitle,
+          ),
+        );
+      },
     );
   }
 }
