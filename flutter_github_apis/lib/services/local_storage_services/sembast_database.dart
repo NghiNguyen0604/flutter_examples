@@ -26,7 +26,7 @@ class SembastDataStore {
   final Database db;
 
   ///Create default database and return to Sembast data store
-  static Future<SembastDataStore> initWithDefaultDatabasename() async {
+  static Future<SembastDataStore> init() async {
     //!For web
     if (kIsWeb) {
       return SembastDataStore(
@@ -37,7 +37,8 @@ class SembastDataStore {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     return SembastDataStore(
       await dbFactory.openDatabase(
-          '${appDocumentDir.path}/${SembastDataStore.appDatabaseName}'),
+        '${appDocumentDir.path}/${SembastDataStore.appDatabaseName}',
+      ),
     );
   }
 }

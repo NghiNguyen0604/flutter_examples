@@ -22,8 +22,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   ///Init local storage database
-  final sembastLocalStore =
-      await SembastDataStore.initWithDefaultDatabasename();
+  final sembastLocalStore = await SembastDataStore.init();
   final ThemeService themeService = ThemeServiceSembast(sembastLocalStore);
 
   final themeModeController = ThemeModeController(themeService);
