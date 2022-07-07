@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text('User List'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -60,7 +61,8 @@ class GitHubUsersPage extends StatelessWidget {
       itemCount: 10,
       itemBuilder: (context, index) {
         return ListTile(
-          leading: const Icon(Icons.abc),
+          leading:
+              CircleAvatar(child: Image.asset('assets/images/avatar_1.png')),
           title: Text(
             'User name $index',
             style: title,
@@ -69,8 +71,24 @@ class GitHubUsersPage extends StatelessWidget {
             'https://github.com/NghiNguyen0604',
             style: subtitle,
           ),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const GitHubUserDetailsPage(),
+              ),
+            );
+          },
         );
       },
     );
+  }
+}
+
+class GitHubUserDetailsPage extends StatelessWidget {
+  const GitHubUserDetailsPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
