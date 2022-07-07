@@ -111,14 +111,15 @@ class _MyAppState extends ConsumerState<MyApp> {
             builder: (context, state) => HomePage(
               key: state.pageKey,
             ),
-            routes: [],
-          ),
-          GoRoute(
-            name: AppRouter.SETTINGS,
-            path: AppRouter.SETTINGS,
-            builder: (context, state) => SettingsPage(
-              key: state.pageKey,
-            ),
+            routes: [
+              GoRoute(
+                name: AppRouter.SETTINGS,
+                path: AppRouter.SETTINGS,
+                builder: (context, state) => SettingsPage(
+                  key: state.pageKey,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -159,7 +160,7 @@ class _LandingPageState extends ConsumerState<LandingPage> {
     //     }
     //   },
     // );
-    return HomePage();
+    return const HomePage();
   }
 }
 

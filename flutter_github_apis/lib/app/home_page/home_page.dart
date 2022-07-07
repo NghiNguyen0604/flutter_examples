@@ -7,14 +7,14 @@
  *
  * Copyright (c) 2022 Nguyen Huu Nghi
  *
- * Description 
+ * Description : Main screen.
  */
-import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../config/app_router.dart';
+import 'github_users_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -41,54 +41,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: const GitHubUsersPage(),
+      body: const GitHubUsersView(),
     );
-  }
-}
-
-class GitHubUsersPage extends StatelessWidget {
-  const GitHubUsersPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final title = Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-        );
-    final subtitle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.normal,
-        );
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading:
-              CircleAvatar(child: Image.asset('assets/images/avatar_1.png')),
-          title: Text(
-            'User name $index',
-            style: title,
-          ),
-          subtitle: Text(
-            'https://github.com/NghiNguyen0604',
-            style: subtitle,
-          ),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const GitHubUserDetailsPage(),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class GitHubUserDetailsPage extends StatelessWidget {
-  const GitHubUserDetailsPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
