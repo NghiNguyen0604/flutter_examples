@@ -62,6 +62,34 @@ class GitHubUserHeaderView extends StatelessWidget {
           ),
         ),
         Positioned(
+          top: 10,
+          left: 10,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+                size: 26,
+              ),
+            ),
+          ),
+        ),
+        const Positioned(
+          top: 10,
+          child: Text(
+            'Profile',
+            style: TextStyle(
+              color: Color.fromRGBO(255, 255, 255, 1),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Positioned(
           top: avatarPosition,
           child: CircleAvatar(
             radius: avatarHeight / 2,

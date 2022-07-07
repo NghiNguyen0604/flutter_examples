@@ -104,24 +104,22 @@ class _MyAppState extends ConsumerState<MyApp> {
         builder: (context, state) => LandingPage(
           key: state.pageKey,
         ),
-        routes: [
-          GoRoute(
-            name: AppRouter.HOMESCREEN,
-            path: AppRouter.HOMESCREEN,
-            builder: (context, state) => HomePage(
-              key: state.pageKey,
-            ),
-            routes: [
-              GoRoute(
-                name: AppRouter.SETTINGS,
-                path: AppRouter.SETTINGS,
-                builder: (context, state) => SettingsPage(
-                  key: state.pageKey,
-                ),
-              ),
-            ],
-          ),
-        ],
+        routes: [],
+      ),
+      GoRoute(
+        name: AppRouter.HOMESCREEN,
+        path: '/' + AppRouter.HOMESCREEN,
+        builder: (context, state) => HomePage(
+          key: state.pageKey,
+        ),
+        routes: [],
+      ),
+      GoRoute(
+        name: AppRouter.SETTINGS,
+        path: '/' + AppRouter.SETTINGS,
+        builder: (context, state) => SettingsPage(
+          key: state.pageKey,
+        ),
       ),
     ],
     // initialLocation: '/',

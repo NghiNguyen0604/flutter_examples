@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../config/app_router.dart';
+import '../../services/github_api_services/github_api_services.dart';
 import 'github_users_view.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,6 +31,12 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('User List'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.deblur),
+            onPressed: () async {
+              await GitHubApiServices().test();
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
