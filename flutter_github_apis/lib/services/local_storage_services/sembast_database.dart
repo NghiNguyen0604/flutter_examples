@@ -16,6 +16,9 @@ class SembastDataStore {
   ///Save settings to this store, = 'settings'
   static const settingStore = 'settings';
 
+  ///Save users to this store, = 'users'
+  static const usersStore = 'users';
+
   ///Default factory database
   static DatabaseFactory dbFactory = databaseFactoryIo;
 
