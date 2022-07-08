@@ -14,6 +14,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../model/github_user.dart';
+import '../../utils/utilities.dart';
 import 'github_users_services.dart';
 
 /// This class used to interface with users through github API.
@@ -42,7 +43,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
           },
         ),
         queryParameters: {
-          'since': 135,
+          'since': 1,
         },
       );
       if (response.statusCode == 200) {
@@ -69,7 +70,10 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         users.isEmpty ||
         lastFetchTime_.isBefore(DateTime.now().subtract(cacheValidDuration_));
     if (shouldRefreshFromAPI) {
+      Utils.log(title: 'REFRESH', info: 'Get new users from API.');
       await _refreshAllUsersRecords();
+    } else {
+      Utils.log(title: 'REFRESH', info: 'Get old users from cache.');
     }
     return users;
   }

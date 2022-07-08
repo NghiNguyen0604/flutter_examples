@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'app/my_app.dart';
+import 'services/github_users_services/github_users_services_files.dart';
 import 'services/local_storage_services/sembast_database.dart';
 import 'theme/theme_controller.dart';
 import 'theme/theme_providers.dart';
@@ -30,6 +31,11 @@ Future<void> main() async {
 
   final themeController = SchemeController(themeService);
   await themeController.getTheme();
+  final githubUsersServicesRemote = GitHubUsersServicesRemote.instance;
+  final githubUsersServicesController = GitHubUsersServicesController(
+    remote: githubUsersServicesRemote,
+    local: githubUsersServicesRemote,
+  );
 
   // turn off the # in the URLs on the web
   GoRouter.setUrlPathStrategy(UrlPathStrategy.path);
@@ -39,6 +45,8 @@ Future<void> main() async {
       overrides: [
         themeModeControllerProvider.overrideWithValue(themeModeController),
         schemeControllerProvider.overrideWithValue(themeController),
+        githubUsersServicesProvider
+            .overrideWithValue(githubUsersServicesController),
       ],
       child: const MyApp(),
     ),

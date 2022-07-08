@@ -7,8 +7,13 @@
  *
  * Description 
  */
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+
+import '../config/config.dart';
 
 ///Utilities function
 class Utils {
@@ -50,6 +55,20 @@ class Utils {
   static void log({required String title, required dynamic info}) {
     if (kDebugMode) {
       debugPrint('$title: ${info.toString()}');
+    }
+  }
+
+  /// Check environment
+  static PlatformEnum checkPlatform(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    if (kIsWeb) {
+      return PlatformEnum.web;
+    } else if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+      return PlatformEnum.desktop;
+    } else if ((Platform.isAndroid || Platform.isIOS) && size.width > 600) {
+      return PlatformEnum.tablet;
+    } else {
+      return PlatformEnum.mobile;
     }
   }
 }
