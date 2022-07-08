@@ -29,6 +29,7 @@ class GitHubUsersServicesController {
     if (!offline) {
       final length = remote.checkUsersBuffer();
       if (length == 0) {
+        Utils.log(title: 'USERS', info: 'Fetch users data from local');
         final localUsers = await local.getAllUsers();
         if (localUsers.isNotEmpty) {
           remote.saveAllUsers(users: localUsers);

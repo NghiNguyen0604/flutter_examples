@@ -75,10 +75,10 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         lastFetchUsersTime_
             .isBefore(DateTime.now().subtract(cacheUsersValidDuration_));
     if (shouldRefreshFromAPI) {
-      Utils.log(title: 'REFRESH', info: 'Get new users from API.');
+      Utils.log(title: 'USERS', info: 'Get new users from API.');
       await _refreshAllUsersRecords();
     } else {
-      Utils.log(title: 'REFRESH', info: 'Get old users from cache.');
+      Utils.log(title: 'USERS', info: 'Get old users from cache.');
     }
     return users_;
   }
@@ -154,6 +154,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
 
   @override
   void saveAllUsers({required List<GitHubUser> users}) {
+    Utils.log(title: 'USERS', info: 'Save users data to cache.');
     users_ = [...users_, ...users];
   }
 
@@ -161,6 +162,8 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
   void saveUser({
     required GitHubUser user,
   }) {
+    Utils.log(title: 'USERS', info: 'Save user data to cache.');
+
     users_ = [
       for (final mUser in users_)
         if (mUser.id == user.id) user else mUser,

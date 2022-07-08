@@ -50,6 +50,8 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
 
   @override
   Future<void> saveAllUsers({required List<GitHubUser> users}) async {
+    Utils.log(title: 'USERS', info: 'Save users data to local.');
+
     for (final mUser in users) {
       await ref_.record(mUser.login).put(
             dataStore.db,
@@ -60,6 +62,8 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
 
   @override
   Future<void> saveUser({required GitHubUser user}) async {
+    Utils.log(title: 'USERS', info: 'Save user data to local.');
+
     await ref_.record(user.login).update(dataStore.db, user.toMap());
   }
 
