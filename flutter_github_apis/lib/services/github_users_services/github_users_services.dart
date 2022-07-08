@@ -17,15 +17,18 @@ abstract class GitHubUsersServices {
   Future<List<GitHubUser>> getAllUsers();
 
   /// Get user information from source
-  Future<GitHubUser> getUserInfo(
+  Future<GitHubUser?> getUserInfo(
     String login,
   );
 
   /// Get all users from cache
-  Future<List<GitHubUser>> getAllUsersRecord();
+  Future<List<GitHubUser>> getAllUsersRecords({
+    bool forceRefresh = false,
+  });
 
   /// Get user information from cache
-  Future<GitHubUser> getUserInfoRecord(
-    String login,
-  );
+  Future<GitHubUser?> getUserInfoRecords({
+    required GitHubUser user,
+    bool forceRefresh = false,
+  });
 }
