@@ -31,4 +31,9 @@ abstract class GitHubUsersServices {
     required GitHubUser user,
     bool forceRefresh = false,
   });
+  void saveAllUsers({required List<GitHubUser> users});
+  void saveUser({
+    required GitHubUser user,
+  });
+  int checkUsersBuffer();
 }

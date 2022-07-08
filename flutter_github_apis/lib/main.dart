@@ -32,9 +32,11 @@ Future<void> main() async {
   final themeController = SchemeController(themeService);
   await themeController.getTheme();
   final githubUsersServicesRemote = GitHubUsersServicesRemote.instance;
+  final gitHubUsersServicesLocal =
+      GitHubUsersServicesLocal(dataStore: sembastLocalStore);
   final githubUsersServicesController = GitHubUsersServicesController(
     remote: githubUsersServicesRemote,
-    local: githubUsersServicesRemote,
+    local: gitHubUsersServicesLocal,
   );
 
   // turn off the # in the URLs on the web

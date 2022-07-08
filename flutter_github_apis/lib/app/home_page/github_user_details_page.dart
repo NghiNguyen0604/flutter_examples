@@ -11,33 +11,87 @@
  * Description: Display user infomation.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../config/config.dart';
+import '../../model/github_user.dart';
+import '../../services/github_users_services/github_users_services_files.dart';
+import '../../utils/utilities.dart';
 
-class GitHubUserDetailsPage extends StatefulWidget {
-  const GitHubUserDetailsPage({Key? key}) : super(key: key);
-
+class GitHubUserDetailsPage extends ConsumerStatefulWidget {
+  const GitHubUserDetailsPage({
+    Key? key,
+  }) : super(key: key);
   @override
-  State<GitHubUserDetailsPage> createState() => _GitHubUserDetailsPageState();
+  ConsumerState<GitHubUserDetailsPage> createState() =>
+      _GitHubUserDetailsPageState();
 }
 
-class _GitHubUserDetailsPageState extends State<GitHubUserDetailsPage> {
-  void _onPullToRefresh() {}
+class _GitHubUserDetailsPageState extends ConsumerState<GitHubUserDetailsPage> {
+  bool forceRefresh = false;
+  void _onPullToRefresh() {
+    if (!forceRefresh) {
+      setState(() {
+        forceRefresh = true;
+      });
+    }
+
+    ref.refresh(getUserProvider(forceRefresh));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: [
-          GitHubUserHeaderView(),
-          GitHubUserInformationView(),
-        ],
-      ),
+    final userAsync = ref.watch(
+      getUserProvider(forceRefresh),
     );
+
+    return userAsync.when(
+        data: (mUser) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              _onPullToRefresh();
+            },
+            child: Scaffold(
+              body: ListView(
+                children: [
+                  GitHubUserHeaderView(
+                    imageUrl: mUser.avatar_url ?? '',
+                    onRefresh: _onPullToRefresh,
+                  ),
+                  GitHubUserInformationView(
+                    user: mUser,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        error: (error, _) => Center(
+              child: Text(
+                error.toString(),
+              ),
+            ),
+        loading: () => const Scaffold(
+              body: Center(
+                child: Text('Đang tải dữ liệu.'),
+              ),
+            ));
   }
 }
 
 class GitHubUserHeaderView extends StatelessWidget {
-  const GitHubUserHeaderView({Key? key}) : super(key: key);
+  const GitHubUserHeaderView({
+    Key? key,
+    required this.imageUrl,
+    this.onRefresh,
+  }) : super(key: key);
+  final String imageUrl;
+  final void Function()? onRefresh;
   static const double coverHeight = 240;
   static const double avatarHeight = 120;
   static const double shift = 0.8;
@@ -73,7 +127,7 @@ class GitHubUserHeaderView extends StatelessWidget {
               child: const Icon(
                 Icons.arrow_back,
                 color: Colors.white,
-                size: 26,
+                size: 24,
               ),
             ),
           ),
@@ -90,13 +144,38 @@ class GitHubUserHeaderView extends StatelessWidget {
           ),
         ),
         Positioned(
+          top: 10,
+          right: 10,
+          child: Builder(
+            builder: (context) {
+              final platform = Utils.checkPlatform(context);
+              if (platform == PlatformEnum.web ||
+                  platform == PlatformEnum.desktop) {
+                return MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      onRefresh?.call();
+                    },
+                    child: const Icon(
+                      Icons.sync,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
+          ),
+        ),
+        Positioned(
           top: avatarPosition,
           child: CircleAvatar(
             radius: avatarHeight / 2,
-            backgroundImage: Image.asset(
-              'assets/images/avatar_1.png',
-              fit: BoxFit.contain,
-            ).image,
+            backgroundImage:
+                imageUrl.isNotEmpty ? Image.network(imageUrl).image : null,
           ),
         ),
       ],
@@ -105,8 +184,11 @@ class GitHubUserHeaderView extends StatelessWidget {
 }
 
 class GitHubUserInformationView extends StatelessWidget {
-  const GitHubUserInformationView({Key? key}) : super(key: key);
-
+  const GitHubUserInformationView({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
+  final GitHubUser user;
   @override
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context)
@@ -117,6 +199,11 @@ class GitHubUserInformationView extends StatelessWidget {
           fontWeight: FontWeight.normal,
           fontSize: 12,
         );
+    final userName = user.login ?? '';
+    final location = user.location ?? '';
+    final following = user.following ?? 0;
+    final follower = user.followers ?? 0;
+    final repos = user.public_repos ?? 0;
     return Padding(
       padding: const EdgeInsets.only(
         right: 10,
@@ -134,11 +221,11 @@ class GitHubUserInformationView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'User Name',
+                  userName,
                   style: titleStyle,
                 ),
                 Text(
-                  'Location',
+                  location,
                   style: noteStyle,
                 ),
               ],
@@ -156,7 +243,7 @@ class GitHubUserInformationView extends StatelessWidget {
                 _buildNumber(
                   context,
                   'Followers',
-                  323,
+                  follower,
                 ),
                 const SizedBox(
                   width: AppInsets.xl,
@@ -164,7 +251,7 @@ class GitHubUserInformationView extends StatelessWidget {
                 _buildNumber(
                   context,
                   'Following',
-                  234,
+                  following,
                 ),
                 const SizedBox(
                   width: AppInsets.xl,
@@ -172,7 +259,7 @@ class GitHubUserInformationView extends StatelessWidget {
                 _buildNumber(
                   context,
                   'Repos',
-                  30,
+                  repos,
                 ),
               ],
             ),

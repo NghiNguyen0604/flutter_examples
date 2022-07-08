@@ -10,14 +10,10 @@
  * Description : Main screen.
  */
 
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../config/app_router.dart';
 import '../../config/config.dart';
 import '../../services/github_users_services/github_users_services_files.dart';
 import '../../utils/utilities.dart';

@@ -22,12 +22,18 @@ final githubUsersServicesProvider = Provider<GitHubUsersServicesController>(
   ),
 );
 
+/// Provider user.
+final githubUserProvider = Provider<GitHubUser>(
+  (ref) => throw ArgumentError(
+    'This provider will be overrided when navigate to new page.',
+  ),
+);
+
 /// Get all users provider
 final getAllUsersProvider =
     FutureProvider.autoDispose.family<List<GitHubUser>, bool>(
   (ref, forceRefresh) async {
     final networkStatus = await NetworkServices.checkConnectivity();
-
     return ref.watch(githubUsersServicesProvider).getAllUsersRecords(
           forceRefresh: forceRefresh,
           offline: !networkStatus,
@@ -35,5 +41,22 @@ final getAllUsersProvider =
   },
   dependencies: [
     githubUsersServicesProvider,
+  ],
+);
+
+/// Get user provider
+final getUserProvider = FutureProvider.autoDispose.family<GitHubUser, bool>(
+  (ref, forceRefresh) async {
+    final networkStatus = await NetworkServices.checkConnectivity();
+    final user = ref.watch(githubUserProvider);
+    return (await ref.watch(githubUsersServicesProvider).getUserInfoRecords(
+          user: user,
+          forceRefresh: forceRefresh,
+          offline: !networkStatus,
+        ))!;
+  },
+  dependencies: [
+    githubUsersServicesProvider,
+    githubUserProvider,
   ],
 );

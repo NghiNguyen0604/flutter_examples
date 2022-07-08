@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/github_users_services/github_users_services_files.dart';
+import '../../utils/utilities.dart';
 import 'github_user_details_page.dart';
 
 class GitHubUsersView extends ConsumerWidget {
@@ -60,7 +61,12 @@ class GitHubUsersView extends ConsumerWidget {
                   onTap: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const GitHubUserDetailsPage(),
+                        builder: (context) => ProviderScope(
+                          overrides: [
+                            githubUserProvider.overrideWithValue(mUsers[index]),
+                          ],
+                          child: const GitHubUserDetailsPage(),
+                        ),
                       ),
                     );
                     onPop?.call();
