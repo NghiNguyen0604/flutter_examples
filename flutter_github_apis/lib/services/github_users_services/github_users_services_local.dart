@@ -25,7 +25,7 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
   final ref_ = StoreRef(SembastDataStore.usersStore);
   @override
   Future<List<GitHubUser>> getAllUsers() async {
-    Utils.log(title: 'REFRESH', info: 'Get new users from local.');
+    Utils.log(title: 'REFRESH', info: 'Get users from local.');
 
     final records = await ref_.find(dataStore.db);
     return List.generate(
