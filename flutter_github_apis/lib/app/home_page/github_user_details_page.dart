@@ -17,6 +17,7 @@ import '../../config/config.dart';
 import '../../model/github_user.dart';
 import '../../services/github_users_services/github_users_services_files.dart';
 import '../../utils/utilities.dart';
+import 'shared/user_avatar_view.dart';
 
 class GitHubUserDetailsPage extends ConsumerStatefulWidget {
   const GitHubUserDetailsPage({
@@ -61,6 +62,7 @@ class _GitHubUserDetailsPageState extends ConsumerState<GitHubUserDetailsPage> {
                 children: [
                   GitHubUserHeaderView(
                     imageUrl: mUser.avatar_url ?? '',
+                    pathToImageData: mUser.avatar_path ?? '',
                     onRefresh: _onPullToRefresh,
                   ),
                   GitHubUserInformationView(
@@ -88,9 +90,11 @@ class GitHubUserHeaderView extends StatelessWidget {
   const GitHubUserHeaderView({
     Key? key,
     required this.imageUrl,
+    required this.pathToImageData,
     this.onRefresh,
   }) : super(key: key);
   final String imageUrl;
+  final String pathToImageData;
   final void Function()? onRefresh;
   static const double coverHeight = 240;
   static const double avatarHeight = 120;
@@ -170,12 +174,19 @@ class GitHubUserHeaderView extends StatelessWidget {
             },
           ),
         ),
+        // Positioned(
+        //   top: avatarPosition,
+        //   child: CircleAvatar(
+        //     radius: avatarHeight / 2,
+        //     backgroundImage:
+        //         imageUrl.isNotEmpty ? Image.network(imageUrl).image : null,
+        //   ),
         Positioned(
           top: avatarPosition,
-          child: CircleAvatar(
+          child: UserAvatarView(
             radius: avatarHeight / 2,
-            backgroundImage:
-                imageUrl.isNotEmpty ? Image.network(imageUrl).image : null,
+            url: imageUrl,
+            pathToImageData: imageUrl,
           ),
         ),
       ],

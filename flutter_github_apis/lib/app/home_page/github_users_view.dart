@@ -15,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/github_users_services/github_users_services_files.dart';
 import '../../utils/utilities.dart';
 import 'github_user_details_page.dart';
+import 'shared/user_avatar_view.dart';
 
 class GitHubUsersView extends ConsumerWidget {
   const GitHubUsersView({
@@ -44,11 +45,9 @@ class GitHubUsersView extends ConsumerWidget {
               itemCount: mUsers.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: (mUsers[index].avatar_url ?? '').isNotEmpty
-                        ? Image.network(mUsers[index].avatar_url!).image
-                        : null,
+                  leading: UserAvatarView(
+                    url: mUsers[index].avatar_url ?? '',
+                    pathToImageData: mUsers[index].avatar_path ?? '',
                   ),
                   title: Text(
                     mUsers[index].login ?? '',

@@ -17,6 +17,7 @@ import 'package:http/http.dart' as http;
 
 import '../../model/github_user.dart';
 import '../../utils/utilities.dart';
+import '../local_storage_services/local_storage_services.dart';
 import 'github_users_services.dart';
 
 /// This class used to interface with users through github API.
@@ -53,6 +54,24 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
           _usersParser,
           jsonDecode(response.body) as List<dynamic>,
         );
+        for (var i = 0; i < users.length; i++) {
+          if (users[i].avatar_url != null) {
+            final response = await http.get(
+              Uri.parse(
+                users[i].avatar_url!,
+              ),
+            );
+            if (response.statusCode == 200) {
+              await LocalStorageServices.instance.saveFile(
+                filePath:
+                    '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/${users[i].login!}.tmp',
+                bytes: response.bodyBytes.toList(),
+              );
+              users[i].avatar_path =
+                  '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/${users[i].login!}.tmp';
+            }
+          }
+        }
       }
     } catch (e) {
       throw ArgumentError(e.toString());
@@ -99,6 +118,22 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         );
 
         ///Stored this user to buffer.
+        if (user.avatar_url != null) {
+          final response = await http.get(
+            Uri.parse(
+              user.avatar_url!,
+            ),
+          );
+          if (response.statusCode == 200) {
+            await LocalStorageServices.instance.saveFile(
+              filePath:
+                  '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/${user.login!}.tmp',
+              bytes: response.bodyBytes.toList(),
+            );
+            user.avatar_path =
+                '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/${user.login!}.tmp';
+          }
+        }
         this.saveUser(user: user);
         return user;
       } else {

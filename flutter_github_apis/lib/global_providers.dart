@@ -8,18 +8,14 @@
  *
  * Description 
  */
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'services/network_services/network_services.dart';
 
 ///Network status provider
 final connectivityProvider = FutureProvider.autoDispose<bool>(
   (ref) async {
-    final connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
-      return true;
-    } else {
-      return false;
-    }
+    final connectivityResult = await NetworkServices.checkConnectivity();
+    return connectivityResult;
   },
 );

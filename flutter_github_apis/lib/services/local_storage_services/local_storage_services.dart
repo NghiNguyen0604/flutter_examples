@@ -14,6 +14,8 @@ import 'dart:io';
  */
 import 'package:path_provider/path_provider.dart';
 
+import '../../utils/utilities.dart';
+
 class LocalStorageServices {
   LocalStorageServices._internal();
   static String imagesDirName = 'images';
@@ -21,12 +23,14 @@ class LocalStorageServices {
   String _path = '';
   Future<void> init() async {
     final dir = await getApplicationDocumentsDirectory();
+    Utils.log(title: 'AppDir', info: dir);
     _path = dir.path;
   }
 
   Future<void> createDirectory(String dirName) async {
     final exist = Directory('$_path/$dirName').existsSync();
     if (!exist) {
+      // await Directory('$_path/$dirName').delete(recursive: true); //debug
       await Directory('$_path/$dirName').create(recursive: true);
     }
   }
@@ -36,12 +40,19 @@ class LocalStorageServices {
     required List<int> bytes,
   }) async {
     final file = File(filePath);
-    await file.writeAsBytes(bytes);
+    final exist = file.existsSync();
+    if (exist) {
+      final length = await file.length();
+      if (length != bytes.length) {
+        await file.writeAsBytes(bytes);
+      }
+    } else {
+      await file.writeAsBytes(bytes);
+    }
   }
 
   Future<List<int>> readFile({
     required String filePath,
-    required List<int> bytes,
   }) async {
     final file = File(filePath);
     return file.readAsBytes();

@@ -56,6 +56,7 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
       await ref_.record(mUser.login).put(
             dataStore.db,
             mUser.toMap(),
+            merge: true,
           );
     }
   }
