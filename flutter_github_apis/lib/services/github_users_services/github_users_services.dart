@@ -22,12 +22,12 @@ abstract class GitHubUsersServices {
   );
 
   /// Get all users from cache
-  Future<List<GitHubUser>> getAllUsersRecords({
+  Future<Map<String, dynamic>> getAllUsersRecords({
     bool forceRefresh = false,
   });
 
   /// Get user information from cache
-  Future<GitHubUser?> getUserInfoRecords({
+  Future<Map<String, dynamic>> getUserInfoRecords({
     required GitHubUser user,
     bool forceRefresh = false,
   });

@@ -33,22 +33,25 @@ class GitHubUsersServicesController {
         final localUsers = await local.getAllUsers();
         if (localUsers.isNotEmpty) {
           remote.saveAllUsers(users: localUsers);
-          return localUsers;
+          final records = await remote.getAllUsersRecords(forceRefresh: true);
+          return records['data'] as List<GitHubUser>;
         } else {
-          final users =
+          final records =
               await remote.getAllUsersRecords(forceRefresh: forceRefresh);
+          if (!(records['cache'] as bool)) {
+            local.saveAllUsers(users: records['data'] as List<GitHubUser>);
+          }
 
-          local.saveAllUsers(users: users);
-
-          return users;
+          return records['data'] as List<GitHubUser>;
         }
       } else {
-        final users =
+        final records =
             await remote.getAllUsersRecords(forceRefresh: forceRefresh);
+        if (!(records['cache'] as bool)) {
+          local.saveAllUsers(users: records['data'] as List<GitHubUser>);
+        }
 
-        local.saveAllUsers(users: users);
-
-        return users;
+        return records['data'] as List<GitHubUser>;
       }
     } else {
       return local.getAllUsers();
@@ -61,11 +64,14 @@ class GitHubUsersServicesController {
     bool offline = false,
   }) async {
     if (!offline) {
-      final _user = await remote.getUserInfoRecords(
+      final records = await remote.getUserInfoRecords(
         user: user,
         forceRefresh: forceRefresh,
       );
-      local.saveUser(user: user);
+      final _user = records['data'] as GitHubUser;
+      if (!(records['cache'] as bool)) {
+        local.saveUser(user: _user);
+      }
       return _user;
     } else {
       return local.getUserInfo(user.login ?? '');

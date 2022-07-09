@@ -44,7 +44,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
     var users = <GitHubUser>[];
     try {
       final response = await http.get(
-        Uri.parse('$url_?since=1'),
+        Uri.parse('$url_?since=2'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -54,22 +54,19 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
           _usersParser,
           jsonDecode(response.body) as List<dynamic>,
         );
+
         for (var i = 0; i < users.length; i++) {
           if (users[i].avatar_url != null) {
-            final response = await http.get(
-              Uri.parse(
-                users[i].avatar_url!,
-              ),
+            final path = await _saveFile(
+              url: users[i].avatar_url ?? '',
+              fileName: users[i].login ?? '',
             );
-            if (response.statusCode == 200) {
-              await LocalStorageServices.instance.saveFile(
-                filePath:
-                    '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/${users[i].login!}.tmp',
-                bytes: response.bodyBytes.toList(),
-              );
-              users[i].avatar_path =
-                  '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/${users[i].login!}.tmp';
-            }
+            Utils.log(
+              title: 'USERS',
+              info: 'Get new ${users.length} users from API.',
+            );
+
+            users[i].avatar_path = path;
           }
         }
       }
@@ -79,13 +76,54 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
     return users;
   }
 
+  Future<String?> _saveFile({
+    required String url,
+    required String fileName,
+  }) async {
+    final response = await http.get(
+      Uri.parse(
+        url,
+      ),
+    );
+    if (response.statusCode == 200) {
+      await LocalStorageServices.instance.saveFile(
+        filePath:
+            '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/$fileName.tmp',
+        bytes: response.bodyBytes.toList(),
+      );
+      return '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/$fileName.tmp';
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> _fetchAllUsersRecords() async {
+    Utils.log(title: 'USERS', info: 'Fetch all users from API.');
+
+    for (final mUser in [...users_]) {
+      final user = await getUserInfo(mUser.login ?? '');
+
+      if (user == null) {
+        users_.removeWhere(
+          (element) => element.login == mUser.login,
+        );
+      }
+    }
+  }
+
   Future<void> _refreshAllUsersRecords() async {
-    this.saveAllUsers(users: await getAllUsers());
+    if (users_.isNotEmpty) {
+      Utils.log(title: 'USERS', info: users_.length);
+
+      await _fetchAllUsersRecords();
+    } else {
+      this.saveAllUsers(users: await getAllUsers());
+    }
     lastFetchUsersTime_ = DateTime.now();
   }
 
   @override
-  Future<List<GitHubUser>> getAllUsersRecords({
+  Future<Map<String, dynamic>> getAllUsersRecords({
     bool forceRefresh = false,
   }) async {
     final shouldRefreshFromAPI = forceRefresh ||
@@ -93,17 +131,21 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         lastFetchUsersTime_
             .isBefore(DateTime.now().subtract(cacheUsersValidDuration_));
     if (shouldRefreshFromAPI) {
-      Utils.log(title: 'USERS', info: 'Get new users from API.');
       await _refreshAllUsersRecords();
     } else {
       Utils.log(title: 'USERS', info: 'Get old users from cache.');
     }
-    return users_;
+    return {
+      'data': users_,
+      'cache': !shouldRefreshFromAPI,
+    };
   }
 
   @override
   Future<GitHubUser?> getUserInfo(String login) async {
     try {
+      Utils.log(title: 'USER', info: 'Get user data from API.');
+
       final response = await http.get(
         Uri.parse('$url_/$login'),
         headers: {
@@ -119,24 +161,16 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
 
         ///Stored this user to buffer.
         if (user.avatar_url != null) {
-          final response = await http.get(
-            Uri.parse(
-              user.avatar_url!,
-            ),
+          final path = await _saveFile(
+            url: user.avatar_url ?? '',
+            fileName: user.login ?? '',
           );
-          if (response.statusCode == 200) {
-            await LocalStorageServices.instance.saveFile(
-              filePath:
-                  '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/${user.login!}.tmp',
-              bytes: response.bodyBytes.toList(),
-            );
-            user.avatar_path =
-                '${LocalStorageServices.instance.path()}/${LocalStorageServices.imagesDirName}/${user.login!}.tmp';
-          }
+          user.avatar_path = path;
         }
         this.saveUser(user: user);
         return user;
       } else {
+        ///status code == 404 (resource not found)
         return null;
       }
     } catch (e) {
@@ -145,7 +179,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
   }
 
   @override
-  Future<GitHubUser?> getUserInfoRecords({
+  Future<Map<String, dynamic>> getUserInfoRecords({
     required GitHubUser user,
     bool forceRefresh = false,
   }) async {
@@ -170,9 +204,17 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
           'login': user.login,
         });
       }
-      return getUserInfo(user.login ?? '');
+      return {
+        'data': await getUserInfo(user.login ?? ''),
+        'cache': false,
+      };
     } else {
-      return user;
+      Utils.log(title: 'USER', info: 'Get user data from cache.');
+
+      return {
+        'data': user,
+        'cache': true,
+      };
     }
   }
 
@@ -189,14 +231,14 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
   @override
   void saveAllUsers({required List<GitHubUser> users}) {
     Utils.log(title: 'USERS', info: 'Save users data to cache.');
-    users_ = [...users_, ...users];
+    users_ = [...users];
   }
 
   @override
   void saveUser({
     required GitHubUser user,
   }) {
-    Utils.log(title: 'USERS', info: 'Save user data to cache.');
+    Utils.log(title: 'USER', info: 'Save user data to cache.');
 
     users_ = [
       for (final mUser in users_)

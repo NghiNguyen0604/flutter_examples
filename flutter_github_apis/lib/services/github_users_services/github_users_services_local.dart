@@ -35,7 +35,7 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
           records[index].value as Map<dynamic, dynamic>,
         ),
       ),
-    );
+    )..sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
   }
 
   @override
@@ -69,13 +69,13 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
   }
 
   @override
-  Future<List<GitHubUser>> getAllUsersRecords({bool forceRefresh = false}) {
+  Future<Map<String, dynamic>> getAllUsersRecords({bool forceRefresh = false}) {
     // No need to use in local.
     throw UnimplementedError();
   }
 
   @override
-  Future<GitHubUser?> getUserInfoRecords({
+  Future<Map<String, dynamic>> getUserInfoRecords({
     required GitHubUser user,
     bool forceRefresh = false,
   }) {
