@@ -13,7 +13,8 @@ import 'package:go_router/go_router.dart';
 
 import 'app/my_app.dart';
 import 'services/github_users_services/github_users_services_files.dart';
-import 'services/local_storage_services/sembast_database.dart';
+import 'services/local_database_services/sembast_database.dart';
+import 'services/local_storage_services/local_storage_services.dart';
 import 'theme/theme_controller.dart';
 import 'theme/theme_providers.dart';
 import 'theme/theme_sembast.dart';
@@ -31,6 +32,12 @@ Future<void> main() async {
 
   final themeController = SchemeController(themeService);
   await themeController.getTheme();
+  final localStorageServices = LocalStorageServices.instance;
+  await localStorageServices.init();
+
+  /// create images folder
+  await localStorageServices
+      .createDirectory(LocalStorageServices.imagesDirName);
   final githubUsersServicesRemote = GitHubUsersServicesRemote.instance;
   final gitHubUsersServicesLocal =
       GitHubUsersServicesLocal(dataStore: sembastLocalStore);

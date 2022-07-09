@@ -14,7 +14,7 @@ import 'package:sembast/sembast.dart';
 
 import '../../model/github_user.dart';
 import '../../utils/utilities.dart';
-import '../local_storage_services/sembast_database.dart';
+import '../local_database_services/sembast_database.dart';
 import 'github_users_services_files.dart';
 
 class GitHubUsersServicesLocal extends GitHubUsersServices {

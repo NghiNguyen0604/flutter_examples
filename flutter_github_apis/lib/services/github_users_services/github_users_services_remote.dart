@@ -48,7 +48,6 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
           'Content-Type': 'application/json',
         },
       );
-
       if (response.statusCode == 200) {
         users = await compute(
           _usersParser,
