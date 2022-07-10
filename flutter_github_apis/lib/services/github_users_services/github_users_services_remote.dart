@@ -151,9 +151,10 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         users_.isEmpty ||
         lastFetchUsersTime_
             .isBefore(DateTime.now().subtract(cacheUsersValidDuration_));
-    Utils.log(title: 'REMOTE', info: 'Should refresh data.');
 
     if (shouldRefreshFromAPI) {
+      Utils.log(title: 'REMOTE', info: 'Should refresh data.');
+
       await _refreshAllUsersRecords();
     } else {
       Utils.log(title: 'CACHE', info: 'Get all users data.');

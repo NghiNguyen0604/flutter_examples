@@ -10,6 +10,8 @@
  *
  * Description: Display user infomation.
  */
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -87,7 +89,7 @@ class _GitHubUserDetailsPageState extends ConsumerState<GitHubUserDetailsPage> {
   }
 }
 
-class GitHubUserHeaderView extends StatelessWidget {
+class GitHubUserHeaderView extends StatefulWidget {
   const GitHubUserHeaderView({
     Key? key,
     required this.imageUrl,
@@ -100,6 +102,53 @@ class GitHubUserHeaderView extends StatelessWidget {
   static const double coverHeight = 240;
   static const double avatarHeight = 120;
   static const double shift = 0.8;
+
+  /// Change this value if additional background image to assets/images;
+  static const int imagesAssetLength = 3;
+  @override
+  State<GitHubUserHeaderView> createState() => _GitHubUserHeaderViewState();
+}
+
+class _GitHubUserHeaderViewState extends State<GitHubUserHeaderView> {
+  late String _imageUrl;
+  late String _pathToImageData;
+  final random = Random();
+  var _backgroundImageIdx = 1;
+  late String _backgroundImagePath;
+  @override
+  void initState() {
+    _init();
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant GitHubUserHeaderView oldWidget) {
+    _init();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _init() {
+    _randomImagePath();
+    _imageUrl = widget.imageUrl;
+    _pathToImageData = widget.pathToImageData;
+  }
+
+  void _randomImagePath() {
+    _backgroundImageIdx = _randomValue(_backgroundImageIdx);
+    _backgroundImagePath = 'assets/images/background_$_backgroundImageIdx.png';
+  }
+
+  int _randomValue(int oldValue) {
+    while (true) {
+      final tmp = 1 + random.nextInt(GitHubUserHeaderView.imagesAssetLength);
+      Utils.log(title: 'RANDOM', info: tmp);
+      Utils.log(title: 'BackgroundImageIdx', info: tmp);
+      if (tmp != oldValue) {
+        return tmp;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const avatarPosition = GitHubUserHeaderView.coverHeight -
@@ -114,7 +163,7 @@ class GitHubUserHeaderView extends StatelessWidget {
                 (1 - GitHubUserHeaderView.shift),
           ),
           child: Image.asset(
-            'assets/images/background_1.png',
+            _backgroundImagePath,
             height: GitHubUserHeaderView.coverHeight,
             width: double.infinity,
             fit: BoxFit.cover,
@@ -160,7 +209,7 @@ class GitHubUserHeaderView extends StatelessWidget {
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                     onTap: () {
-                      onRefresh?.call();
+                      widget.onRefresh?.call();
                     },
                     child: const Icon(
                       Icons.sync,
@@ -185,9 +234,9 @@ class GitHubUserHeaderView extends StatelessWidget {
         Positioned(
           top: avatarPosition,
           child: UserAvatarView(
-            radius: avatarHeight / 2,
-            url: imageUrl,
-            pathToImageData: imageUrl,
+            radius: GitHubUserHeaderView.avatarHeight / 2,
+            url: _imageUrl,
+            pathToImageData: _pathToImageData,
           ),
         ),
       ],
