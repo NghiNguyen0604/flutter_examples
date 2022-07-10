@@ -25,7 +25,7 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
   final ref_ = StoreRef(SembastDataStore.usersStore);
   @override
   Future<List<GitHubUser>> getAllUsers() async {
-    Utils.log(title: 'REFRESH', info: 'Get users from local.');
+    Utils.log(title: 'LOCAL', info: 'Get all users data.');
 
     final records = await ref_.find(dataStore.db);
     return List.generate(
@@ -40,6 +40,8 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
 
   @override
   Future<GitHubUser?> getUserInfo(String login) async {
+    Utils.log(title: 'LOCAL', info: 'Get user data.');
+
     final record = GitHubUser.fromMap(
       Map<String, dynamic>.from(
         await ref_.record(login).get(dataStore.db) as Map<dynamic, dynamic>,
@@ -50,7 +52,7 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
 
   @override
   Future<void> saveAllUsers({required List<GitHubUser> users}) async {
-    Utils.log(title: 'USERS', info: 'Save users data to local.');
+    Utils.log(title: 'LOCAL', info: 'Save all users data.');
 
     for (final mUser in users) {
       await ref_.record(mUser.login).put(
@@ -63,7 +65,7 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
 
   @override
   Future<void> saveUser({required GitHubUser user}) async {
-    Utils.log(title: 'USERS', info: 'Save user data to local.');
+    Utils.log(title: 'LOCAL', info: 'Save user data.');
 
     await ref_.record(user.login).update(dataStore.db, user.toMap());
   }

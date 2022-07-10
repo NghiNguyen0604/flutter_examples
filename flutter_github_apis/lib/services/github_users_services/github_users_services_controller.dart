@@ -32,22 +32,31 @@ class GitHubUsersServicesController {
         Utils.log(title: 'USERS', info: 'Fetch users data from local');
         final localUsers = await local.getAllUsers();
         if (localUsers.isNotEmpty) {
+          ///Save users data to buffer.
           remote.saveAllUsers(users: localUsers);
-          final records = await remote.getAllUsersRecords(forceRefresh: true);
+
+          ///Fetch users data from remote.
+          final records =
+              await remote.getAllUsersRecords(forceRefresh: forceRefresh);
           return records['data'] as List<GitHubUser>;
         } else {
+          ///Get new users from remote.
           final records =
               await remote.getAllUsersRecords(forceRefresh: forceRefresh);
           if (!(records['cache'] as bool)) {
+            /// Stored to local if data fetch from API.
             local.saveAllUsers(users: records['data'] as List<GitHubUser>);
           }
 
           return records['data'] as List<GitHubUser>;
         }
       } else {
+        ///Get users from remote. May be from cache.
         final records =
             await remote.getAllUsersRecords(forceRefresh: forceRefresh);
         if (!(records['cache'] as bool)) {
+          /// Stored to local if data fetch from API.
+
           local.saveAllUsers(users: records['data'] as List<GitHubUser>);
         }
 

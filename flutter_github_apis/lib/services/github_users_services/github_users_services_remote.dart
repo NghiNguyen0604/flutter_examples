@@ -54,16 +54,17 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
           _usersParser,
           jsonDecode(response.body) as List<dynamic>,
         );
-
+        Utils.log(
+          title: 'REMOTE',
+          info: 'Get new ${users.length} users.',
+        );
         for (var i = 0; i < users.length; i++) {
+          users[i] = (await getUserInfo(users[i].login ?? ''))!;
+
           if (users[i].avatar_url != null) {
             final path = await _saveFile(
               url: users[i].avatar_url ?? '',
               fileName: users[i].login ?? '',
-            );
-            Utils.log(
-              title: 'USERS',
-              info: 'Get new ${users.length} users from API.',
             );
 
             users[i].avatar_path = path;
@@ -98,7 +99,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
   }
 
   Future<void> _fetchAllUsersRecords() async {
-    Utils.log(title: 'USERS', info: 'Fetch all users from API.');
+    Utils.log(title: 'REMOTE', info: 'Fetch all users.');
 
     for (final mUser in [...users_]) {
       final user = await getUserInfo(mUser.login ?? '');
@@ -113,7 +114,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
 
   Future<void> _refreshAllUsersRecords() async {
     if (users_.isNotEmpty) {
-      Utils.log(title: 'USERS', info: users_.length);
+      Utils.log(title: 'REMOTE', info: 'Number of users ${users_.length}');
 
       await _fetchAllUsersRecords();
     } else {
@@ -133,7 +134,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
     if (shouldRefreshFromAPI) {
       await _refreshAllUsersRecords();
     } else {
-      Utils.log(title: 'USERS', info: 'Get old users from cache.');
+      Utils.log(title: 'CACHE', info: 'Get all users.');
     }
     return {
       'data': users_,
@@ -144,7 +145,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
   @override
   Future<GitHubUser?> getUserInfo(String login) async {
     try {
-      Utils.log(title: 'USER', info: 'Get user data from API.');
+      Utils.log(title: 'REMOTE', info: 'Get user data.');
 
       final response = await http.get(
         Uri.parse('$url_/$login'),
@@ -209,7 +210,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         'cache': false,
       };
     } else {
-      Utils.log(title: 'USER', info: 'Get user data from cache.');
+      Utils.log(title: 'CACHE', info: 'Get user data.');
 
       return {
         'data': user,

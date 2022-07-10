@@ -30,7 +30,7 @@ class LocalStorageServices {
   Future<void> createDirectory(String dirName) async {
     final exist = Directory('$_path/$dirName').existsSync();
     if (!exist) {
-      Utils.log(title: 'AppDir', info: 'Create $dirName folder');
+      Utils.log(title: 'STORAGE', info: 'Create $dirName folder');
 
       // await Directory('$_path/$dirName').delete(recursive: true); //debug
       await Directory('$_path/$dirName').create(recursive: true);
@@ -46,14 +46,14 @@ class LocalStorageServices {
     if (exist) {
       final length = await file.length();
       if (length != bytes.length) {
-        Utils.log(title: 'FILE', info: 'Update image data.');
+        Utils.log(title: 'STORAGE', info: 'Update image data.');
 
         await file.writeAsBytes(bytes);
       } else {
-        Utils.log(title: 'FILE', info: 'Image data not changed.');
+        Utils.log(title: 'STORAGE', info: 'Image data not changed.');
       }
     } else {
-      Utils.log(title: 'FILE', info: 'Create image data.');
+      Utils.log(title: 'STORAGE', info: 'Create image data.');
 
       await file.writeAsBytes(bytes);
     }
