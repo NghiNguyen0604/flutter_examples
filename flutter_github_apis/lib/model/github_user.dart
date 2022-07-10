@@ -13,30 +13,30 @@ import 'dart:convert';
  */
 
 class GitHubUser {
-  String? login;
-  int? id;
-  String? node_id;
-  String? avatar_url;
-  String? gravatar_id;
-  String? url;
-  String? html_url;
-  String? followers_url;
-  String? following_url;
-  String? gists_url;
-  String? starred_url;
-  String? subscriptions_url;
-  String? organizations_url;
-  String? repos_url;
-  String? events_url;
-  String? received_events_url;
-  String? type;
-  bool? site_admin;
+  String login;
+  int id;
+  String node_id;
+  String avatar_url;
+  String gravatar_id;
+  String url;
+  String html_url;
+  String followers_url;
+  String following_url;
+  String gists_url;
+  String starred_url;
+  String subscriptions_url;
+  String organizations_url;
+  String repos_url;
+  String events_url;
+  String received_events_url;
+  String type;
+  bool site_admin;
   String? name;
   String? company;
   String? blog;
   String? location;
   String? email;
-  String? hireable;
+  bool? hireable;
   String? bio;
   String? twitter_username;
   int? public_repos;
@@ -46,26 +46,25 @@ class GitHubUser {
   String? created_at;
   String? updated_at;
   String? avatar_path;
-
   GitHubUser({
-    this.login,
-    this.id,
-    this.node_id,
-    this.avatar_url,
-    this.gravatar_id,
-    this.url,
-    this.html_url,
-    this.followers_url,
-    this.following_url,
-    this.gists_url,
-    this.starred_url,
-    this.subscriptions_url,
-    this.organizations_url,
-    this.repos_url,
-    this.events_url,
-    this.received_events_url,
-    this.type,
-    this.site_admin,
+    required this.login,
+    required this.id,
+    required this.node_id,
+    required this.avatar_url,
+    required this.gravatar_id,
+    required this.url,
+    required this.html_url,
+    required this.followers_url,
+    required this.following_url,
+    required this.gists_url,
+    required this.starred_url,
+    required this.subscriptions_url,
+    required this.organizations_url,
+    required this.repos_url,
+    required this.events_url,
+    required this.received_events_url,
+    required this.type,
+    required this.site_admin,
     this.name,
     this.company,
     this.blog,
@@ -107,7 +106,7 @@ class GitHubUser {
     String? blog,
     String? location,
     String? email,
-    String? hireable,
+    bool? hireable,
     String? bio,
     String? twitter_username,
     int? public_repos,
@@ -195,42 +194,30 @@ class GitHubUser {
 
   factory GitHubUser.fromMap(Map<String, dynamic> map) {
     return GitHubUser(
-      login: map['login'] != null ? map['login'] as String : null,
-      id: map['id'] != null ? map['id'] as int : null,
-      node_id: map['node_id'] != null ? map['node_id'] as String : null,
-      avatar_url:
-          map['avatar_url'] != null ? map['avatar_url'] as String : null,
-      gravatar_id:
-          map['gravatar_id'] != null ? map['gravatar_id'] as String : null,
-      url: map['url'] != null ? map['url'] as String : null,
-      html_url: map['html_url'] != null ? map['html_url'] as String : null,
-      followers_url:
-          map['followers_url'] != null ? map['followers_url'] as String : null,
-      following_url:
-          map['following_url'] != null ? map['following_url'] as String : null,
-      gists_url: map['gists_url'] != null ? map['gists_url'] as String : null,
-      starred_url:
-          map['starred_url'] != null ? map['starred_url'] as String : null,
-      subscriptions_url: map['subscriptions_url'] != null
-          ? map['subscriptions_url'] as String
-          : null,
-      organizations_url: map['organizations_url'] != null
-          ? map['organizations_url'] as String
-          : null,
-      repos_url: map['repos_url'] != null ? map['repos_url'] as String : null,
-      events_url:
-          map['events_url'] != null ? map['events_url'] as String : null,
-      received_events_url: map['received_events_url'] != null
-          ? map['received_events_url'] as String
-          : null,
-      type: map['type'] != null ? map['type'] as String : null,
-      site_admin: map['site_admin'] != null ? map['site_admin'] as bool : null,
+      login: map['login'] as String,
+      id: map['id'] as int,
+      node_id: map['node_id'] as String,
+      avatar_url: map['avatar_url'] as String,
+      gravatar_id: map['gravatar_id'] as String,
+      url: map['url'] as String,
+      html_url: map['html_url'] as String,
+      followers_url: map['followers_url'] as String,
+      following_url: map['following_url'] as String,
+      gists_url: map['gists_url'] as String,
+      starred_url: map['starred_url'] as String,
+      subscriptions_url: map['subscriptions_url'] as String,
+      organizations_url: map['organizations_url'] as String,
+      repos_url: map['repos_url'] as String,
+      events_url: map['events_url'] as String,
+      received_events_url: map['received_events_url'] as String,
+      type: map['type'] as String,
+      site_admin: map['site_admin'] as bool,
       name: map['name'] != null ? map['name'] as String : null,
       company: map['company'] != null ? map['company'] as String : null,
       blog: map['blog'] != null ? map['blog'] as String : null,
       location: map['location'] != null ? map['location'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
-      hireable: map['hireable'] != null ? map['hireable'] as String : null,
+      hireable: map['hireable'] != null ? map['hireable'] as bool : null,
       bio: map['bio'] != null ? map['bio'] as String : null,
       twitter_username: map['twitter_username'] != null
           ? map['twitter_username'] as String

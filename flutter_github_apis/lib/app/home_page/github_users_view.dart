@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/github_users_services/github_users_services_files.dart';
-import '../../utils/utilities.dart';
 import 'github_user_details_page.dart';
 import 'shared/user_avatar_view.dart';
 
@@ -46,15 +45,15 @@ class GitHubUsersView extends ConsumerWidget {
               itemBuilder: (context, index) {
                 return ListTile(
                   leading: UserAvatarView(
-                    url: mUsers[index].avatar_url ?? '',
+                    url: mUsers[index].avatar_url,
                     pathToImageData: mUsers[index].avatar_path ?? '',
                   ),
                   title: Text(
-                    mUsers[index].login ?? '',
+                    mUsers[index].login,
                     style: title,
                   ),
                   subtitle: Text(
-                    mUsers[index].url ?? '',
+                    mUsers[index].html_url,
                     style: subtitle,
                   ),
                   onTap: () async {

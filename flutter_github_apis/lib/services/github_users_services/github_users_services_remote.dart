@@ -41,13 +41,22 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
   final url_ = 'https://api.github.com/users';
   @override
   Future<List<GitHubUser>> getAllUsers() async {
+    Utils.log(
+      title: 'REMOTE',
+      info: 'Start get new users.',
+    );
     var users = <GitHubUser>[];
     try {
       final response = await http.get(
-        Uri.parse('$url_?since=2'),
+        Uri.parse('$url_?since=50'),
         headers: {
           'Content-Type': 'application/json',
+          'User-Agent': 'request',
         },
+      );
+      Utils.log(
+        title: 'REMOTE',
+        info: 'Response from server [${response.statusCode}].',
       );
       if (response.statusCode == 200) {
         users = await compute(
@@ -59,16 +68,14 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
           info: 'Get new ${users.length} users.',
         );
         for (var i = 0; i < users.length; i++) {
-          users[i] = (await getUserInfo(users[i].login ?? ''))!;
+          users[i] = (await getUserInfo(users[i].login))!;
 
-          if (users[i].avatar_url != null) {
-            final path = await _saveFile(
-              url: users[i].avatar_url ?? '',
-              fileName: users[i].login ?? '',
-            );
+          final path = await _saveFile(
+            url: users[i].avatar_url,
+            fileName: users[i].login,
+          );
 
-            users[i].avatar_path = path;
-          }
+          users[i].avatar_path = path;
         }
       }
     } catch (e) {
@@ -102,7 +109,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
     Utils.log(title: 'REMOTE', info: 'Fetch all users.');
 
     for (final mUser in [...users_]) {
-      final user = await getUserInfo(mUser.login ?? '');
+      final user = await getUserInfo(mUser.login);
 
       if (user == null) {
         users_.removeWhere(
@@ -114,7 +121,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
 
   Future<void> _refreshAllUsersRecords() async {
     if (users_.isNotEmpty) {
-      Utils.log(title: 'REMOTE', info: 'Number of users ${users_.length}');
+      Utils.log(title: 'REMOTE', info: 'Fetch ${users_.length} users ');
 
       await _fetchAllUsersRecords();
     } else {
@@ -131,10 +138,12 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         users_.isEmpty ||
         lastFetchUsersTime_
             .isBefore(DateTime.now().subtract(cacheUsersValidDuration_));
+    Utils.log(title: 'REMOTE', info: 'Should refresh data.');
+
     if (shouldRefreshFromAPI) {
       await _refreshAllUsersRecords();
     } else {
-      Utils.log(title: 'CACHE', info: 'Get all users.');
+      Utils.log(title: 'CACHE', info: 'Get all users data.');
     }
     return {
       'data': users_,
@@ -151,6 +160,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         Uri.parse('$url_/$login'),
         headers: {
           'Content-Type': 'application/json',
+          'User-Agent': 'request',
         },
       );
       if (response.statusCode == 200) {
@@ -161,13 +171,13 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         );
 
         ///Stored this user to buffer.
-        if (user.avatar_url != null) {
-          final path = await _saveFile(
-            url: user.avatar_url ?? '',
-            fileName: user.login ?? '',
-          );
-          user.avatar_path = path;
-        }
+
+        final path = await _saveFile(
+          url: user.avatar_url,
+          fileName: user.login,
+        );
+        user.avatar_path = path;
+
         this.saveUser(user: user);
         return user;
       } else {
@@ -206,7 +216,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
         });
       }
       return {
-        'data': await getUserInfo(user.login ?? ''),
+        'data': await getUserInfo(user.login),
         'cache': false,
       };
     } else {
@@ -231,7 +241,8 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
 
   @override
   void saveAllUsers({required List<GitHubUser> users}) {
-    Utils.log(title: 'USERS', info: 'Save users data to cache.');
+    Utils.log(
+        title: 'CACHE', info: 'Save ${users.length} users data to cache.');
     users_ = [...users];
   }
 
@@ -239,7 +250,7 @@ class GitHubUsersServicesRemote extends GitHubUsersServices {
   void saveUser({
     required GitHubUser user,
   }) {
-    Utils.log(title: 'USER', info: 'Save user data to cache.');
+    Utils.log(title: 'CACHE', info: 'Save user data to cache.');
 
     users_ = [
       for (final mUser in users_)

@@ -52,37 +52,38 @@ class _GitHubUserDetailsPageState extends ConsumerState<GitHubUserDetailsPage> {
     );
 
     return userAsync.when(
-        data: (mUser) {
-          return RefreshIndicator(
-            onRefresh: () async {
-              _onPullToRefresh();
-            },
-            child: Scaffold(
-              body: ListView(
-                children: [
-                  GitHubUserHeaderView(
-                    imageUrl: mUser.avatar_url ?? '',
-                    pathToImageData: mUser.avatar_path ?? '',
-                    onRefresh: _onPullToRefresh,
-                  ),
-                  GitHubUserInformationView(
-                    user: mUser,
-                  ),
-                ],
-              ),
+      data: (mUser) {
+        return RefreshIndicator(
+          onRefresh: () async {
+            _onPullToRefresh();
+          },
+          child: Scaffold(
+            body: ListView(
+              children: [
+                GitHubUserHeaderView(
+                  imageUrl: mUser.avatar_url,
+                  pathToImageData: mUser.avatar_path ?? '',
+                  onRefresh: _onPullToRefresh,
+                ),
+                GitHubUserInformationView(
+                  user: mUser,
+                ),
+              ],
             ),
-          );
-        },
-        error: (error, _) => Center(
-              child: Text(
-                error.toString(),
-              ),
-            ),
-        loading: () => const Scaffold(
-              body: Center(
-                child: Text('Đang tải dữ liệu.'),
-              ),
-            ));
+          ),
+        );
+      },
+      error: (error, _) => Center(
+        child: Text(
+          error.toString(),
+        ),
+      ),
+      loading: () => const Scaffold(
+        body: Center(
+          child: Text('Đang tải dữ liệu.'),
+        ),
+      ),
+    );
   }
 }
 
@@ -210,7 +211,7 @@ class GitHubUserInformationView extends StatelessWidget {
           fontWeight: FontWeight.normal,
           fontSize: 12,
         );
-    final userName = user.login ?? '';
+    final userName = user.login;
     final location = user.location ?? '';
     final following = user.following ?? 0;
     final follower = user.followers ?? 0;

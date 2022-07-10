@@ -35,7 +35,7 @@ class GitHubUsersServicesLocal extends GitHubUsersServices {
           records[index].value as Map<dynamic, dynamic>,
         ),
       ),
-    )..sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
+    )..sort((a, b) => (a.id).compareTo(b.id));
   }
 
   @override

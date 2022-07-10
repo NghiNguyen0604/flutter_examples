@@ -29,7 +29,7 @@ class GitHubUsersServicesController {
     if (!offline) {
       final length = remote.checkUsersBuffer();
       if (length == 0) {
-        Utils.log(title: 'USERS', info: 'Fetch users data from local');
+        Utils.log(title: 'LOCAL', info: 'Fetch users data.');
         final localUsers = await local.getAllUsers();
         if (localUsers.isNotEmpty) {
           ///Save users data to buffer.
@@ -83,7 +83,7 @@ class GitHubUsersServicesController {
       }
       return _user;
     } else {
-      return local.getUserInfo(user.login ?? '');
+      return local.getUserInfo(user.login);
     }
   }
 }
