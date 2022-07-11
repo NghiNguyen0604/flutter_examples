@@ -6,7 +6,24 @@ final mqttAppStateProvider =
   throw ArgumentError('This provider must be override.');
 });
 
-enum MQTTAppConnectionState { connected, disconnected, connecting }
+enum MQTTAppConnectionState {
+  connected,
+  disconnected,
+  connecting,
+}
+
+extension MQTTAppConnectionStateExtension on MQTTAppConnectionState {
+  String get description {
+    switch (this) {
+      case MQTTAppConnectionState.connected:
+        return 'Connected';
+      case MQTTAppConnectionState.connecting:
+        return 'Connecting';
+      case MQTTAppConnectionState.disconnected:
+        return 'Disconnected';
+    }
+  }
+}
 
 class MQTTAppState with ChangeNotifier {
   MQTTAppConnectionState _appConnectionState =
