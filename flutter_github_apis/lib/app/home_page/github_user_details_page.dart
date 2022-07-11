@@ -94,6 +94,8 @@ class GitHubUserHeaderView extends StatefulWidget {
     Key? key,
     required this.imageUrl,
     required this.pathToImageData,
+
+    ///for desktop
     this.onRefresh,
   }) : super(key: key);
   final String imageUrl;
@@ -105,6 +107,8 @@ class GitHubUserHeaderView extends StatefulWidget {
 
   /// Change this value if additional background image to assets/images;
   static const int imagesAssetLength = 3;
+  static int backgroundImageIdx = 1;
+
   @override
   State<GitHubUserHeaderView> createState() => _GitHubUserHeaderViewState();
 }
@@ -113,37 +117,39 @@ class _GitHubUserHeaderViewState extends State<GitHubUserHeaderView> {
   late String _imageUrl;
   late String _pathToImageData;
   final random = Random();
-  var _backgroundImageIdx = 1;
   late String _backgroundImagePath;
   @override
   void initState() {
-    _init();
     super.initState();
+    _init();
   }
 
   @override
   void didUpdateWidget(covariant GitHubUserHeaderView oldWidget) {
-    _init();
     super.didUpdateWidget(oldWidget);
+
+    _init();
   }
 
   void _init() {
     _randomImagePath();
+
     _imageUrl = widget.imageUrl;
     _pathToImageData = widget.pathToImageData;
   }
 
   void _randomImagePath() {
-    _backgroundImageIdx = _randomValue(_backgroundImageIdx);
-    _backgroundImagePath = 'assets/images/background_$_backgroundImageIdx.png';
+    final idx = _randomValue(GitHubUserHeaderView.backgroundImageIdx);
+    Utils.log(title: 'BackgroundImageIdx', info: idx);
+
+    _backgroundImagePath = 'assets/images/background_$idx.png';
   }
 
   int _randomValue(int oldValue) {
     while (true) {
       final tmp = 1 + random.nextInt(GitHubUserHeaderView.imagesAssetLength);
-      Utils.log(title: 'RANDOM', info: tmp);
-      Utils.log(title: 'BackgroundImageIdx', info: tmp);
       if (tmp != oldValue) {
+        GitHubUserHeaderView.backgroundImageIdx = tmp;
         return tmp;
       }
     }
